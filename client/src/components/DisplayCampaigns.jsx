@@ -33,7 +33,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
             />)}
         </div>
     </div>
-  )
+)
 }
 
 export default DisplayCampaigns
