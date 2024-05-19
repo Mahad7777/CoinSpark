@@ -48,10 +48,9 @@ const userLogin = async (req, res) => {
             id: user.id,
             username: user.name
         }
-        jwt.sign(payload,process.env.JWT_SECRET, {expiresIn: '1h'},(err,token)=>{
-            if(err) throw err
-            res.cookie('token',token).json({user})
-        })
+        const token = await GenerateToken(payload, res);
+        res.json({user, token: token, msg: "Successfully LoggedIn !"})
+
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ err: err.message });
@@ -62,17 +61,16 @@ const userLogin = async (req, res) => {
 const getUser = async (req, res) => {
     try {
         // Assuming you have middleware for authentication to get the user from the request
-        const user = req.user;
-        const userid = user.id
-        const userbyid = await User.findById(userid)
-        // You may customize the data you want to return here
-        // const userbyid = {
-        //     id: user.id,
-        //     name: user.name,
-        //     email: user.email,
-        //     isAdmin: user.isadmin // Assuming isAdmin is a field in your user schema
-        // };
-        res.json({userbyid});
+        const { id } = req.user;
+        const userData = await User.findById(id).catch((err) => { 
+            console.log("Error Fetching user data by ID! ", err)
+            return res.status(500).json({ error: 'Can not find user by ID' })
+        })
+
+        if (!userData) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({userData});
     } catch (error) {
         console.error('Error fetching user data:', error);
         res.status(500).json({ error: 'Server error' });

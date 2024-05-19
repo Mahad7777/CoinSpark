@@ -7,4 +7,5 @@ user.post('/signup',userSignup)
 user.post('/login', userLogin)
 user.get('/getuser', AuthenticateToken, getUser)
 
+
 module.exports = user

@@ -6,7 +6,7 @@ import { UserContext } from '../context/userContext';
 
 const Login = () => {
     const navigate = useNavigate()
-    const {setisAdmin} = useContext(UserContext)
+    const {fetchUserProfile} = useContext(UserContext)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -27,7 +27,7 @@ const Login = () => {
           toast.error(res.data.err);
       } else {
           toast.success(res.data.msg);
-          setisAdmin(res.data.user.isadmin)
+          fetchUserProfile()
           if (res.data.user.isadmin) {
             navigate('/admin-dashboard'); // Navigate to admin dashboard
         } else {

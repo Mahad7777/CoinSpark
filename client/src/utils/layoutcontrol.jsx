@@ -30,7 +30,7 @@ export const PublicLayout = () => {
   
 
 export const AdminLayout = () => {
-    const {isAdmin} = useContext(UserContext)
+    const {isAdmin, user} = useContext(UserContext)
 
     return isAdmin ? (
         <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
@@ -40,6 +40,7 @@ export const AdminLayout = () => {
             <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
                 {/* <Navbar /> */}
                 <Outlet />
+                <h1>{user.userData.name}</h1>
             </div>
         </div>
     ) : <Navigate to={'/'}/>
