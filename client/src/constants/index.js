@@ -24,3 +24,27 @@ export const navlinks = [
     disabled: true,
   },
 ];
+
+export const adminNavlinks = [
+  {
+    name: 'dashboard',
+    imgUrl: dashboard,
+    link: '/admin-dashboard',
+  },
+  {
+    name: 'campaign',
+    imgUrl: createCampaign,
+    link: '/create-campaign',
+  },
+  {
+    name: 'profile',
+    imgUrl: profile,
+    link: '/campaign-requests',
+  },
+  {
+    name: 'logout',
+    imgUrl: logout,
+    link: '/',
+    disabled: true,
+  },
+];

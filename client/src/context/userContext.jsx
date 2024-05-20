@@ -6,18 +6,20 @@ export const UserContext = createContext();
 
 // Provider component to wrap the application
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
     const fetchUserProfile = async () => {
         try {
-            const { data } = await axios.get('/user/getUser');
-            setUser(data);
-            setIsAdmin(data.userData.isadmin)
+            const { data: {userData} } = await axios.get('/user/getUser');
+            console.log('Fetched user data:', userData); // Log the fetched user data
+            setUser({userData});
+            setIsAdmin(userData.isadmin);
         } catch (error) {
             console.error('Error fetching user profile:', error);
         }
     };
+    
 
     useEffect(() => {
         fetchUserProfile(); // Fetch user profile on initial render
