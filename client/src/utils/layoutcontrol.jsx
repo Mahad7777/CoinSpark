@@ -6,7 +6,8 @@ import { Outlet, useNavigate, Navigate } from 'react-router-dom';
 import {UserContext} from '../context/userContext'
 
 export const MainLayout = () => {
-  return (
+  const {user, isAdmin} = useContext(UserContext)
+  return user? (
     <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
         <Sidebar />
@@ -16,7 +17,9 @@ export const MainLayout = () => {
         <Outlet />
       </div>
     </div>
-  );
+  ) : (
+    <Navigate to='/login'/>
+  )
 };
 
 export const PublicLayout = () => {

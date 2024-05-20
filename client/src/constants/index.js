@@ -9,7 +9,7 @@ export const navlinks = [
   {
     name: 'campaign',
     imgUrl: createCampaign,
-    link: '/create-campaign',
+    link: '/submit-request',
   },
 
   {

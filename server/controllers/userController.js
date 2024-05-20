@@ -48,7 +48,7 @@ const userLogin = async (req, res) => {
             id: user.id,
             username: user.name
         }
-        const token = await GenerateToken(payload, res);
+        const token = await GenerateToken(payload);
         res.json({user, token: token, msg: "Successfully LoggedIn !"})
 
     } catch (err) {
@@ -60,20 +60,14 @@ const userLogin = async (req, res) => {
 
 const getUser = async (req, res) => {
     try {
-        // Assuming you have middleware for authentication to get the user from the request
-        const { id } = req.user;
-        const userData = await User.findById(id).catch((err) => { 
-            console.log("Error Fetching user data by ID! ", err)
-            return res.status(500).json({ error: 'Can not find user by ID' })
-        })
-
-        if (!userData) {
-            return res.status(404).json({ error: 'User not found' });
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found!' });
         }
-        res.json({userData});
+        res.json({ userData: user });
     } catch (error) {
-        console.error('Error fetching user data:', error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 }
 

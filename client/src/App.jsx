@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Sidebar, Navbar } from './components';
+import { Sidebar, Navbar, SubmitRequest } from './components';
 import { CampaignDetails, CreateCampaign, Home, Profile, Signup, Login, AdminDashboard, CampaignRequests } from './pages';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
@@ -26,6 +26,7 @@ const App = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/submit-request" element={<SubmitRequest />} />
             <Route path="/campaign-details/:id" element={<CampaignDetails />} />
           </Route>
 

@@ -18,6 +18,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended: false}))
 //setting up routes
 app.use('/user', require('./routes/user'))
+app.use('/campaigns', require('./routes/campaign_req'))
 
 //setting up port
 const port = 8000

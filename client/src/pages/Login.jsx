@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
+import axiosInstance from '../utils/axiosInstance';
 
 const Login = () => {
     const navigate = useNavigate()
@@ -22,27 +23,35 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('/user/login', formData);
-      if (res.data.err) {
-          toast.error(res.data.err);
-      } else {
-          toast.success(res.data.msg);
-          fetchUserProfile()
-          if (res.data.user.isadmin) {
-            navigate('/admin-dashboard'); // Navigate to admin dashboard
+        const res = await axiosInstance.post('/user/login', formData);
+        if (res.data.err) {
+            toast.error(res.data.err);
         } else {
-            navigate('/'); // Navigate to user dashboard
+            toast.success(res.data.msg);
+
+            const token = res.data.token;
+            console.log("Token received:", token);
+            localStorage.setItem("token", token);
+
+            // Fetch user profile and wait for it to complete
+            await fetchUserProfile();
+
+            if (res.data.user.isadmin) {
+                console.log("Navigating to admin dashboard");
+                navigate('/admin-dashboard'); // Navigate to admin dashboard
+            } else {
+                console.log("Navigating to user dashboard");
+                navigate('/'); // Navigate to user dashboard
+            }
         }
-      }
-  } catch (err) {
-      // Check if the error has a response with a specific error message
-      if (err.response && err.response.data && err.response.data.err) {
-          toast.error(err.response.data.err);
-      } else {
-          toast.error('Server error');
-      }
-  }
-  };
+    } catch (err) {
+        if (err.response && err.response.data && err.response.data.err) {
+            toast.error(err.response.data.err);
+        } else {
+            toast.error('Server error');
+        }
+    }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center">
