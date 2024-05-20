@@ -3,7 +3,6 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
-import axiosInstance from '../utils/axiosInstance';
 
 const Login = () => {
     const navigate = useNavigate()
@@ -23,7 +22,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-        const res = await axiosInstance.post('/user/login', formData);
+        const res = await axios.post('/user/login', formData);
         if (res.data.err) {
             toast.error(res.data.err);
         } else {

@@ -48,7 +48,7 @@ const userLogin = async (req, res) => {
             id: user.id,
             username: user.name
         }
-        const token = await GenerateToken(payload);
+        const token = await GenerateToken(payload,res);
         res.json({user, token: token, msg: "Successfully LoggedIn !"})
 
     } catch (err) {
