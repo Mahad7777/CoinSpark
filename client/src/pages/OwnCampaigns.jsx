@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { DisplayCampaigns } from '../components';
 import { useStateContext } from '../context'
 
-const Profile = () => {
+const OwnCampaigns = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
 
@@ -29,4 +29,4 @@ const Profile = () => {
   )
 }
  
-export default Profile
+export default OwnCampaigns

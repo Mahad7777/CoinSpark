@@ -1,11 +1,11 @@
 const Campaign = require('../models/camp_req')
 const createCampaign= async (req,res)=>{
     try {
-        const { name, campaignTitle, story, goal, endDate, imageUrl, walletAddress, useremail } = req.body;
-        
-        const emailexists = await Campaign.findOne({useremail})
-        if (emailexists){
-            return res.status(400).json({err: "Your request already submitted!! "})
+        const { name, campaignTitle, story, goal, endDate, imageUrl, walletAddress, useremail, status} = req.body;
+
+        const existingCampaign = await Campaign.findOne({ useremail, status: 'pending' });
+        if (existingCampaign) {
+            return res.status(400).json({ err: "Your request already submitted and is pending approval!" });
         }
 
         // Create a new campaign
@@ -17,7 +17,8 @@ const createCampaign= async (req,res)=>{
             goal,
             endDate,
             imageUrl,
-            walletAddress
+            walletAddress,
+            status: "pending"
         });
 
         // Save the campaign to the database
@@ -40,7 +41,23 @@ const getCampaigns = async (req, res) => {
     }
 };
 
+const getCampaign_withID = async (req, res) => {
+    try {
+      const campaign = await Campaign.findById(req.params.id);
+      if (!campaign) {
+        return res.status(404).json({ message: 'Campaign not found' });
+      }
+      res.json(campaign);
+    } catch (error) {
+      console.error('Error fetching campaign:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+
+
+
 module.exports = {
     createCampaign,
-    getCampaigns
+    getCampaigns,
+    getCampaign_withID
 }

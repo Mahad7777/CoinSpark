@@ -6,7 +6,16 @@ import { Outlet, useNavigate, Navigate } from 'react-router-dom';
 import {UserContext} from '../context/userContext'
 
 export const MainLayout = () => {
-  const {user, isAdmin} = useContext(UserContext)
+  const {user, isAdmin, fetchUserProfile} = useContext(UserContext)
+  useEffect(() => {
+    fetchUserProfile(); // Fetch user profile on initial render
+  }, []);
+
+  if (!user) {
+    // If user is undefined, return a loading spinner or nothing until the data is fetched
+    return <div className="text-white">Token expired.. </div>;
+  }
+
   return user? (
     <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
@@ -34,12 +43,16 @@ export const PublicLayout = () => {
   
 
   export const AdminLayout = () => {
-    const { isAdmin, user } = useContext(UserContext);
+    const { isAdmin, user, fetchUserProfile } = useContext(UserContext);
+    useEffect(() => {
+      fetchUserProfile(); // Fetch user profile on initial render
+    }, []);
+
   
     // Check if the user object exists before accessing userData
     if (!user) {
       // If user is undefined, return a loading spinner or nothing until the data is fetched
-      return <div>Loading...</div>;
+      return <div className="text-white">Token expired.. </div>;
     }
   
     const userData = user.userData;

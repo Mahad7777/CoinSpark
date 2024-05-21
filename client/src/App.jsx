@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Sidebar, Navbar, SubmitRequest } from './components';
-import { CampaignDetails, CreateCampaign, Home, Profile, Signup, Login, AdminDashboard, CampaignRequests } from './pages';
+import { CampaignDetails, CreateCampaign, Home, Signup, Login, AdminDashboard, CampaignRequests, OwnCampaigns, Requestdetails } from './pages';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 import { PublicLayout, MainLayout, AdminLayout } from './utils/layoutcontrol';
@@ -25,7 +25,7 @@ const App = () => {
           {/* Routes with Sidebar and Navbar */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<OwnCampaigns />} />
             <Route path="/submit-request" element={<SubmitRequest />} />
             <Route path="/campaign-details/:id" element={<CampaignDetails />} />
           </Route>
@@ -33,6 +33,7 @@ const App = () => {
           <Route element={<AdminLayout />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/campaign-requests" element={<CampaignRequests />} />
+            <Route path="/campaign-requests/:id" element={<Requestdetails />} />
             <Route path="/create-campaign" element={<CreateCampaign />} />
           </Route>
         </Routes>

@@ -25,9 +25,9 @@ const SubmitRequest = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
+    
         try {
-          const response = await axios.post('/campaigns', { ...formData, useremail });
+          const response = await axios.post('/campaigns', { ...formData, useremail});
           console.log('Campaign created successfully:', response.data);
           toast.success(response.data.msg);
       

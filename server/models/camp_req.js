@@ -42,6 +42,11 @@ const CampaignSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    status:{
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending"
     }
 }, {
     timestamps: true // This will add createdAt and updatedAt timestamps automatically
