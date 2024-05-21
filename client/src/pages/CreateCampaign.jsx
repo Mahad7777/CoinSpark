@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
 import {ethers} from 'ethers';
 import { useStateContext  } from '../context';
-
 import { money } from '../assets';
 import { CustomButton,FormField } from '../components';
 import {checkIfImage} from '../utils';
 
 const CreateCampaign = () => {
+  const location = useLocation();
+  const initialFormData = location.state?.campaign || {};
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { createCampaign } = useStateContext();
@@ -16,8 +18,9 @@ const CreateCampaign = () => {
     title: '',
     description: '',
     target: '', 
+    walletAddress: '',
     deadline: '',
-    image: ''
+    image: '',
   });
 
   const handleFormFieldChange = (fieldName, e) => {
@@ -38,6 +41,24 @@ const CreateCampaign = () => {
       }
     })
   }
+
+  // useEffect(() => {
+  //   if (initialFormData) {
+  //     const validEndDate = new Date(initialFormData.endDate);
+  //     const formattedDate = isNaN(validEndDate.getTime()) ? '' : validEndDate.toISOString().split('T')[0];
+  
+  //     setForm((prevForm) => ({
+  //       ...prevForm,
+  //       name: initialFormData.name,
+  //       title: initialFormData.campaignTitle,
+  //       description: initialFormData.story,
+  //       target: initialFormData.goal,
+  //       deadline: formattedDate,
+  //       image: initialFormData.imageUrl,
+  //       walletAddress: initialFormData.walletAddress,
+  //     }));
+  //   }
+  // }, [initialFormData]);
 
 
   return (
@@ -86,6 +107,7 @@ const CreateCampaign = () => {
             value={form.target}
             handleChange={(e) => handleFormFieldChange('target', e)}
           />
+
           <FormField 
             labelName="End Date *"
             placeholder="End Date"
@@ -101,6 +123,15 @@ const CreateCampaign = () => {
             inputType="url"
             value={form.image}
             handleChange={(e) => handleFormFieldChange('image', e)}
+          />
+
+        
+          <FormField 
+            labelName="Wallet address"
+            placeholder="Provide a valid wallet address! "
+            inputType="url"
+            value={form.walletAddress}
+            handleChange={(e) => handleFormFieldChange('walletAddress', e)}
           />
 
           <div className="flex justify-center items-center mt-[40px]">

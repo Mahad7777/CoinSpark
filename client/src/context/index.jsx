@@ -17,7 +17,7 @@ export const StateContextProvider = ({ children }) => {
         try {
             const data = await createCampaign({
 				args: [
-					address, // owner
+					form.walletAddress, // owner
 					form.title, // title
 					form.description, // description
 					form.target,

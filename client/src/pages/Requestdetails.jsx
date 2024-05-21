@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import {toast} from 'react-hot-toast'
 
 const RequestDetails = () => {
+    const navigate = useNavigate()
   const {id} = useParams();
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,9 +20,27 @@ const RequestDetails = () => {
         setLoading(false);
       }
     };
-
     fetchCampaign();
   }, [id]);
+
+  const rejectRequest = async () => {
+    try {    
+        const response = await axios.patch(`/campaigns/${id}`, { status: 'rejected' });
+        toast.success(response.data.message)
+        navigate('/campaign-requests')
+    } catch (err) {
+        if (err.response && err.response.data && err.response.data.error) {
+            toast.error(err.response.data.error);
+        } else {
+            toast.error('Server error');
+        }
+    }
+  }
+
+  const makeLive = () => {
+    navigate('/create-campaign', { state: { campaign } });
+  };
+
 
   if (loading) {
     return <div className="text-white">Loading...</div>;
@@ -31,18 +51,30 @@ const RequestDetails = () => {
   }
 
   return (
-    <div className="p-4 bg-[#13131a] min-h-screen text-white">
-      <h1 className="text-3xl font-bold mb-4">{campaign.campaignTitle}</h1>
-      <img src={campaign.imageUrl} alt={campaign.campaignTitle} className="w-full h-64 object-cover rounded mb-4" />
-      <p className="mb-4"><strong>Organizer:</strong> {campaign.name}</p>
-      <p className="mb-4"><strong>Email:</strong> {campaign.useremail}</p>
-      <p className="mb-4"><strong>Story:</strong> {campaign.story}</p>
-      <p className="mb-4"><strong>Goal:</strong> ${campaign.goal}</p>
-      <p className="mb-4"><strong>End Date:</strong> {new Date(campaign.endDate).toLocaleDateString()}</p>
-      <p className="mb-4"><strong>Wallet Address:</strong> {campaign.walletAddress}</p>
-      <button>Make it live</button>
-      <button>Rejected</button>
+    <div className="p-8 bg-[#1a1a2e] min-h-screen text-white">
+  <div className="max-w-3xl mx-auto bg-[#2e2e4d] p-6 rounded-lg shadow-md">
+    <h1 className="text-4xl font-bold mb-6 text-center">{campaign.campaignTitle}</h1>
+    <img src={campaign.imageUrl} alt={campaign.campaignTitle} className="w-full h-72 object-cover rounded-lg mb-6" />
+    <div className="mb-6">
+      <p className="mb-2 text-lg"><strong>Organizer:</strong> {campaign.name}</p>
+      <p className="mb-2 text-lg"><strong>Email:</strong> {campaign.useremail}</p>
+      <p className="mb-4 text-lg"><strong>Story:</strong> {campaign.story}</p>
+      <p className="mb-2 text-lg"><strong>Goal:</strong> ${campaign.goal}</p>
+      <p className="mb-2 text-lg"><strong>End Date:</strong> {new Date(campaign.endDate).toLocaleDateString()}</p>
+      <p className="mb-2 text-lg"><strong>Wallet Address:</strong> {campaign.walletAddress}</p>
+      <p className="mb-2 text-lg"><strong>Status:</strong> {campaign.status}</p>
     </div>
+    <div className="flex justify-between">
+      <button onClick={makeLive} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+        Make it Live
+      </button>
+      <button onClick={rejectRequest} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
+
   );
 };
 
