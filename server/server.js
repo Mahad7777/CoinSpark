@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 //setting up cors
 const corsOptions = {
     credentials: true,
-    origin: 'http://localhost:5174'
+    origin: 'http://localhost:5173'
 };
 const corsMiddleware = cors(corsOptions);
 app.use(corsMiddleware);

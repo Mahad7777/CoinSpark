@@ -13,6 +13,7 @@
     "@thirdweb-dev/sdk": "^4",
     "axios": "^1.6.8",
     "ethers": "^5",
+    "is-image-url": "^1.1.8",
     "react": "^18.2",
     "react-dom": "^18.2",
     "react-hot-toast": "^2.4.1",

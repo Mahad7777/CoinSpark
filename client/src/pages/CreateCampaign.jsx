@@ -3,8 +3,9 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import {ethers} from 'ethers';
 import { useStateContext  } from '../context';
 import { money } from '../assets';
-import { CustomButton,FormField } from '../components';
+import { CustomButton,FormField,Loader } from '../components';
 import {checkIfImage} from '../utils';
+import isImageUrl from 'is-image-url';
 
 const CreateCampaign = () => {
   const location = useLocation();
@@ -29,36 +30,48 @@ const CreateCampaign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    checkIfImage(form.image, async (exists) => {
-      if(exists) {
-        setIsLoading(true)
-        await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18)})
-        setIsLoading(false);
-        navigate('/');
-      } else {
-        alert('Provide valid image URL')
-        setForm({ ...form, image: '' });
-      }
-    })
-  }
+    if (isImageUrl(form.image)) {
+      setIsLoading(true);
+      await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
+      setIsLoading(false);
+      navigate('/');
+    } else {
+      alert('Provide valid image URL');
+      setForm({ ...form, image: '' });
+    }
+  };
 
-  // useEffect(() => {
-  //   if (initialFormData) {
-  //     const validEndDate = new Date(initialFormData.endDate);
-  //     const formattedDate = isNaN(validEndDate.getTime()) ? '' : validEndDate.toISOString().split('T')[0];
+  useEffect(() => {
+    console.log('initialFormData:', initialFormData);
+    console.log('form:', form);
   
-  //     setForm((prevForm) => ({
-  //       ...prevForm,
-  //       name: initialFormData.name,
-  //       title: initialFormData.campaignTitle,
-  //       description: initialFormData.story,
-  //       target: initialFormData.goal,
-  //       deadline: formattedDate,
-  //       image: initialFormData.imageUrl,
-  //       walletAddress: initialFormData.walletAddress,
-  //     }));
-  //   }
-  // }, [initialFormData]);
+    if (initialFormData) {
+      // const validEndDate = new Date(initialFormData.endDate);
+      // const formattedDate = isNaN(validEndDate.getTime()) ? '' : validEndDate.toISOString().split('T')[0];
+  
+      const updatedForm = {
+        name: initialFormData.name,
+        title: initialFormData.campaignTitle,
+        description: initialFormData.story,
+        target: initialFormData.goal,
+        // deadline: formattedDate,
+        image: initialFormData.imageUrl,
+        walletAddress: initialFormData.walletAddress,
+      };
+  
+      if (
+        updatedForm.name !== form.name ||
+        updatedForm.title !== form.title ||
+        updatedForm.description !== form.description ||
+        updatedForm.target !== form.target ||
+        // updatedForm.deadline !== form.deadline ||
+        updatedForm.image !== form.image ||
+        updatedForm.walletAddress !== form.walletAddress
+      ) {
+        setForm(updatedForm);
+      }
+    }
+  }, [initialFormData]);
 
 
   return (
@@ -129,7 +142,7 @@ const CreateCampaign = () => {
           <FormField 
             labelName="Wallet address"
             placeholder="Provide a valid wallet address! "
-            inputType="url"
+            inputType="text"
             value={form.walletAddress}
             handleChange={(e) => handleFormFieldChange('walletAddress', e)}
           />

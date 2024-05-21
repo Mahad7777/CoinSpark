@@ -10,6 +10,8 @@ const RequestDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) return; // Skip the effect if id is falsy
+  
     const fetchCampaign = async () => {
       try {
         const response = await axios.get(`/campaigns/${id}`);
@@ -20,8 +22,12 @@ const RequestDetails = () => {
         setLoading(false);
       }
     };
+  
     fetchCampaign();
-  }, [id]);
+  
+    // Since we only want this effect to run once, pass an empty dependency array
+  }, [id]); // <-- Empty dependency array
+  
 
   const rejectRequest = async () => {
     try {    
