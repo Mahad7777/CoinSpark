@@ -1,26 +1,36 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { useStateContext } from '../context';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from "uuid";
 import FundCard from './FundCard';
 import { loader } from '../assets';
-import { daysLeft } from '../utils';
-import { UserContext } from '../context/userContext';
 
-const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
+const DisplayAllCampaigns = () => {
     const navigate = useNavigate();
-    const {isAdmin} = useContext(UserContext)
+    const [isLoading, setIsLoading] = useState(false);
+    const [campaigns, setCampaigns] = useState([]);
+    const { address, contract, getCampaigns } = useStateContext();
+
+    const fetchCampaigns = async () => {
+        setIsLoading(true);
+        const data = await getCampaigns();
+        setCampaigns(data);
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        if (contract) fetchCampaigns();
+    }, [address, contract]);
 
     const handleNavigate = (campaign) => {
         navigate(`/campaign-details/${campaign.title}`, { state: campaign })
     }
 
-    // Filter campaigns with remaining days >= 0
-    const displayedCampaigns = campaigns.filter(campaign => daysLeft(campaign.deadline) >= 0);
 
     return (
         <div>
             <h1 className="font-epilogue font-semibold text-[18px] text-white text-left">
-                {title} ({displayedCampaigns.length})
+                {"All Campaigns"} ({campaigns.length})
             </h1>
 
             <div className="flex flex-wrap mt-[20px] gap-[26px]">
@@ -28,13 +38,13 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
                     <img src={loader} alt="loader" className="w-[100px] h-[100px] object-contain" />
                 )}
 
-                {!isLoading && displayedCampaigns.length === 0 && (
+                {!isLoading && campaigns.length === 0 && (
                     <p className="font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]">
                         You have not created any campaigns yet
                     </p>
                 )}
 
-                {!isLoading && displayedCampaigns.length > 0 && displayedCampaigns.map((campaign) => (
+                {!isLoading && campaigns.length > 0 && campaigns.map((campaign) => (
                     <FundCard 
                         key={uuidv4()}
                         {...campaign}
@@ -46,4 +56,4 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
     );
 }
 
-export default DisplayCampaigns;
+export default DisplayAllCampaigns;

@@ -29,7 +29,7 @@ function Navbar() {
             title={'All campaigns'}
             styles={'bg-[#1dc071]'}
             handleClick={() => {
-                navigate('/')
+                navigate('/allcampaigns')
             }}
             />
         )}
