@@ -4,6 +4,7 @@ const db = require('./controllers/dbConnection')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
+
 //setting up cors
 const corsOptions = {
     credentials: true,

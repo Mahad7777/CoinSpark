@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from "uuid";
 import FundCard from './FundCard';
 import { loader } from '../assets';
+import { daysLeft } from '../utils';
 
 const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
     const navigate = useNavigate();
@@ -37,3 +38,4 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 }
 
 export default DisplayCampaigns
+

@@ -1,12 +1,19 @@
 const Campaign = require('../models/camp_req')
-const createCampaign= async (req,res)=>{
+const createRequests = async (req, res) => {
     try {
-        const { name, campaignTitle, story, goal, endDate, imageUrl, walletAddress, useremail, status} = req.body;
+        const { name, campaignTitle, story, goal, endDate, imageUrl, walletAddress, useremail } = req.body;
 
         const existingCampaign = await Campaign.findOne({ useremail, status: 'pending' });
         if (existingCampaign) {
             return res.status(400).json({ err: "Your request already submitted and is pending approval!" });
         }
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ err: "Must attach supporting files for your case!" });
+        }
+
+        // Collect file paths
+        const documents = req.files.map(file => file.path);
 
         // Create a new campaign
         const newCampaign = new Campaign({
@@ -18,21 +25,21 @@ const createCampaign= async (req,res)=>{
             endDate,
             imageUrl,
             walletAddress,
-            status: "pending"
+            documents,
         });
 
         // Save the campaign to the database
         const savedCampaign = await newCampaign.save();
 
         // Respond with the saved campaign
-        res.status(201).json({savedCampaign, msg: "Request submitted to Admin!"});
+        res.status(201).json({ savedCampaign, msg: "Request submitted to Admin!" });
     } catch (err) {
         console.error('Error creating campaign:', err);
         res.status(500).json({ error: 'An error occurred while creating the campaign' });
     }
-}
+};
 
-const getCampaigns = async (req, res) => {
+const getRequests = async (req, res) => {
     try {
         const campaigns = await Campaign.find();
         res.status(200).json(campaigns);
@@ -41,7 +48,7 @@ const getCampaigns = async (req, res) => {
     }
 };
 
-const getCampaign_withID = async (req, res) => {
+const getRequest_withID = async (req, res) => {
     try {
         const campaign = await Campaign.findById(req.params.id);
         if (!campaign) {
@@ -55,7 +62,7 @@ const getCampaign_withID = async (req, res) => {
     }
 
   // PATCH endpoint to update campaign status
-    const updateCampaignStatus =  async (req, res) => {
+    const updateRequestStatus =  async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
     
@@ -71,7 +78,7 @@ const getCampaign_withID = async (req, res) => {
             campaign.status = status;
             const updatedCampaign = await campaign.save();
     
-            res.json({ message: 'Campaign rejected successfully'});
+            res.json({ message: 'Campaign status updated successfully! '});
         } catch (error) {
             console.error('Error updating campaign status:', error);
             res.status(500).json({ error: 'An error occurred while updating the campaign status' });
@@ -79,8 +86,8 @@ const getCampaign_withID = async (req, res) => {
     };
 
 module.exports = {
-    createCampaign,
-    getCampaigns,
-    getCampaign_withID,
-    updateCampaignStatus
+    createRequests,
+    getRequests,
+    getRequest_withID,
+    updateRequestStatus
 }

@@ -43,8 +43,18 @@ const RequestDetails = () => {
     }
   }
 
-  const makeLive = () => {
-    navigate('/create-campaign', { state: { campaign } });
+  const makeLive = async () => {
+    try {    
+      const response = await axios.patch(`/campaigns/${id}`, { status: 'accepted' });
+      toast.success(response.data.message)
+      navigate('/create-campaign', { state: { campaign } });
+  } catch (err) {
+      if (err.response && err.response.data && err.response.data.error) {
+          toast.error(err.response.data.error);
+      } else {
+          toast.error('Server error');
+      }
+  }
   };
 
 
