@@ -67,8 +67,8 @@ const RequestDetails = () => {
   }
 
   return (
-    <div className="p-8 bg-[#1a1a2e] min-h-screen text-white">
-  <div className="max-w-3xl mx-auto bg-[#2e2e4d] p-6 rounded-lg shadow-md">
+    <div className="p-8 min-h-screen text-white">
+  <div className="max-w-3xl mx-auto  p-6 rounded-lg shadow-lg bg-gray-900">
     <h1 className="text-4xl font-bold mb-6 text-center">{campaign.campaignTitle}</h1>
     <img src={campaign.imageUrl} alt={campaign.campaignTitle} className="w-full h-72 object-cover rounded-lg mb-6" />
     <div className="mb-6">

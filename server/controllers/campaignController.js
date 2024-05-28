@@ -8,12 +8,12 @@ const createRequests = async (req, res) => {
             return res.status(400).json({ err: "Your request already submitted and is pending approval!" });
         }
 
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ err: "Must attach supporting files for your case!" });
-        }
+        // if (!req.files || req.files.length === 0) {
+        //     return res.status(400).json({ err: "Must attach supporting files for your case!" });
+        // }
 
         // Collect file paths
-        const documents = req.files.map(file => file.path);
+        // const documents = req.files.map(file => file.path);
 
         // Create a new campaign
         const newCampaign = new Campaign({
@@ -25,7 +25,6 @@ const createRequests = async (req, res) => {
             endDate,
             imageUrl,
             walletAddress,
-            documents,
         });
 
         // Save the campaign to the database

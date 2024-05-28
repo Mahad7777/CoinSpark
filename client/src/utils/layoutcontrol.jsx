@@ -28,7 +28,7 @@ export const MainLayout = () => {
 
 
   return user? (
-    <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
+    <div className="relative sm:-8 p-4 bg-gradient-to-br from-black via-gray-900 to-blue-900 min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
         <Sidebar />
       </div>
@@ -44,11 +44,11 @@ export const MainLayout = () => {
 
 export const PublicLayout = () => {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#13131a]">
-        <div className="relative p-4 w-full max-w-lg">
+      // <div className="flex items-center justify-center min-h-screen">
+      //   <div className="relative p-4 w-full max-w-lg">
           <Outlet />
-        </div>
-      </div>
+      //   {/* </div>
+      // </div> */}
     );
   };
   
@@ -64,7 +64,7 @@ export const PublicLayout = () => {
     if (!user) {
       // If user is undefined, return a loading spinner or nothing until the data is fetched
       return (
-        <div className="flex items-center justify-center h-screen bg-gray-800 text-white">
+        <div className="flex items-center justify-center h-screen bg-gradient-to-br from-black via-gray-900 to-blue-900 text-white">
           <div className="text-center">
             <p>Token expired...</p>
             <Link to="/login" className="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -78,7 +78,7 @@ export const PublicLayout = () => {
     const userData = user.userData;
   
     return isAdmin ? (
-      <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
+      <div className="relative sm:-8 p-4 bg-gradient-to-br from-black via-gray-900 to-blue-900 min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
         <AdminSidebar />
       </div>

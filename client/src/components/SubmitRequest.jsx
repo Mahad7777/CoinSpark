@@ -1,13 +1,17 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {toast} from 'react-hot-toast'
+import { toast } from 'react-hot-toast';
 import { UserContext } from '../context/userContext';
+// import Loader from './Loader'; // Assuming you have a Loader component
+import FormField from './FormField'; // Assuming you have a FormField component
+import CustomButton from './CustomButton'; // Assuming you have a CustomButton component
 
 const SubmitRequest = () => {
-    const {user} = useContext(UserContext)
-    const useremail = user.userData.email
-    const navigate = useNavigate()
+    const { user } = useContext(UserContext);
+    const useremail = user.userData.email;
+    const navigate = useNavigate();
+    // const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         campaignTitle: '',
@@ -16,46 +20,27 @@ const SubmitRequest = () => {
         endDate: '',
         imageUrl: '',
         walletAddress: '',
-        files: []
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);
-        setFormData({ ...formData, files });
-    };
-    
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        const data = new FormData();
-        data.append('name', formData.name);
-        data.append('campaignTitle', formData.campaignTitle);
-        data.append('story', formData.story);
-        data.append('goal', formData.goal);
-        data.append('endDate', formData.endDate);
-        data.append('imageUrl', formData.imageUrl);
-        data.append('walletAddress', formData.walletAddress);
-        data.append('useremail', useremail);
-    
-        formData.files.forEach((file) => {
-            data.append('files', file);
-        });
-    
+        // setIsLoading(true);
+
+        const data = { ...formData, useremail };
+
         try {
             const response = await axios.post('/campaigns', data, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 }
             });
             console.log('Campaign created successfully:', response.data);
             toast.success(response.data.msg);
-    
+
             // Reset form
             setFormData({
                 name: '',
@@ -65,9 +50,8 @@ const SubmitRequest = () => {
                 endDate: '',
                 imageUrl: '',
                 walletAddress: '',
-                files: []
             });
-    
+
             navigate('/');
         } catch (err) {
             // Check if the error response has the 'err' property
@@ -76,113 +60,89 @@ const SubmitRequest = () => {
             } else {
                 toast.error('Server error');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
-    
 
-      return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="w-full max-w-2xl p-8 bg-gray-800 rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold text-white mb-6">Submit a New Campaign</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Name:</label>
-                        <input
-                            type="text"
-                            name="name"
+    return (
+        <div className="flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4 shadow-depth">
+            {/* {isLoading && <Loader />} */}
+            <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#1abc9c] rounded-[10px]">
+                <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-black">Submit a Request</h1>
+            </div>
+            <div className="bg-gray-900 w-full mt-[20px] rounded-[10px]">
+                <form onSubmit={handleSubmit} className="w-full flex flex-col gap-[30px] p-7">
+                    <div className="flex flex-wrap gap-[40px]">
+                        <FormField 
+                            labelName="Your Name *"
+                            placeholder="Mahad"
+                            inputType="text"
                             value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            handleChange={(e) => handleChange('name', e.target.value)}
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Campaign Title:</label>
-                        <input
-                            type="text"
-                            name="campaignTitle"
+                        <FormField 
+                            labelName="Campaign Title *"
+                            placeholder="Write a title"
+                            inputType="text"
                             value={formData.campaignTitle}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            handleChange={(e) => handleChange('campaignTitle', e.target.value)}
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Story:</label>
-                        <textarea
-                            name="story"
-                            value={formData.story}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        ></textarea>
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Goal (Amount to be raised):</label>
-                        <input
-                            type="number"
-                            name="goal"
-                            placeholder='Enter amount in ETH'
-                            value={formData.goal}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">End Date:</label>
-                        <input
-                            type="date"
-                            name="endDate"
-                            value={formData.endDate}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Image URL:</label>
-                        <input
-                            type="url"
-                            name="imageUrl"
-                            value={formData.imageUrl}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-300">Wallet Address:</label>
-                        <input
-                            type="text"
-                            name="walletAddress"
-                            placeholder='Cross check the wallet Address please! '
-                            value={formData.walletAddress}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="mb-4">
-                    <label className="block text-gray-300">Attach Documents:</label>
-                    <input
-                        type="file"
-                        name="files"
-                        onChange={handleFileChange}
-                        multiple
-                        className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+                    <FormField 
+                        labelName="Story *"
+                        placeholder="Write your story"
+                        isTextArea
+                        value={formData.story}
+                        handleChange={(e) => handleChange('story', e.target.value)}
                     />
-                </div>
-                    <button
-                        type="submit"
-                        className="w-full py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        Submit Campaign
-                    </button>
+
+                    <div className="flex flex-wrap gap-[40px]">
+                        <FormField 
+                            labelName="Goal *"
+                            placeholder="ETH 0.50"
+                            inputType="text"
+                            value={formData.goal}
+                            handleChange={(e) => handleChange('goal', e.target.value)}
+                        />
+
+                        <FormField 
+                            labelName="End Date *"
+                            placeholder="End Date"
+                            inputType="date"
+                            value={formData.endDate}
+                            handleChange={(e) => handleChange('endDate', e.target.value)}
+                        />
+                    </div>
+
+                    <FormField 
+                        labelName="Campaign image *"
+                        placeholder="Place image URL of your campaign"
+                        inputType="url"
+                        value={formData.imageUrl}
+                        handleChange={(e) => handleChange('imageUrl', e.target.value)}
+                    />
+
+                    <FormField 
+                        labelName="Wallet address"
+                        placeholder="Provide a valid wallet address!"
+                        inputType="text"
+                        value={formData.walletAddress}
+                        handleChange={(e) => handleChange('walletAddress', e.target.value)}
+                    />
+
+                    <div className="flex justify-center items-center mt-[40px]">
+                        <CustomButton 
+                            btnType="submit"
+                            title="Submit new Request"
+                            styles="bg-[#1abc9c]"
+                        />
+                    </div>
                 </form>
             </div>
         </div>
-    );    
+    );
 };
 
 export default SubmitRequest;

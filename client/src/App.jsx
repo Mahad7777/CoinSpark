@@ -12,8 +12,8 @@ axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.withCredentials = true; 
 const App = () => {
   return (
-      <div className="relative p-4 bg-[#13131a] min-h-screen">
-        <Toaster position='top-center' toastOptions={{ duration: 2000 }} />
+    <>
+      <Toaster position='top-center' toastOptions={{ duration: 2000 }} />
       <UserProvider>
         <Routes>
           {/* Routes without Sidebar and Navbar */}
@@ -39,7 +39,7 @@ const App = () => {
           </Route>
         </Routes>
         </UserProvider>
-      </div>
+    </>
   );
 };
 
