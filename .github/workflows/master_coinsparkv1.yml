@@ -31,7 +31,7 @@ jobs:
       - name: Upload client artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: client-app
+          name: client
           path: client/build # Adjust this if your build directory is different
 
   build-server:
@@ -58,7 +58,7 @@ jobs:
       - name: Upload server artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: server-app
+          name: server
           path: server # Adjust this if needed
 
   deploy:
@@ -74,12 +74,12 @@ jobs:
       - name: Download client artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: client-app
+          name: client
 
       - name: Download server artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: server-app
+          name: server
 
       - name: List files after downloading artifacts
         run: ls -la
