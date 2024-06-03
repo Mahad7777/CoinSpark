@@ -15,58 +15,76 @@ const SubmitRequest = () => {
     // const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
+        useremail: useremail,
         campaignTitle: '',
         story: '',
         goal: '',
         endDate: '',
         imageUrl: '',
         walletAddress: '',
+        files: null,
     });
 
     const handleChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleFileChange = (e) => {
+        setFormData({ ...formData, files: e.target.files });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         // setIsLoading(true);
 
-        const data = { ...formData, useremail };
-        checkIfImage(formData.imageUrl, async (exists)=>{
-            if(exists){
-                try {
-                    const response = await axios.post('/campaigns', data, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    console.log('Campaign created successfully:', response.data);
-                    toast.success(response.data.msg);
-        
-                    // Reset form
-                    setFormData({
-                        name: '',
-                        campaignTitle: '',
-                        story: '',
-                        goal: '',
-                        endDate: '',
-                        imageUrl: '',
-                        walletAddress: '',
-                    });
-        
-                    navigate('/');
-                } catch (err) {
-                    // Check if the error response has the 'err' property
-                    if (err.response && err.response.data && err.response.data.err) {
-                        toast.error(err.response.data.err);
-                    } else {
-                        toast.error('Server error');
-                    }
-                }
-            }else{
-                toast.error('Provide valid image URL');
+        const data = new FormData();
+        for (const key in formData) {
+            if (key === 'files' && formData.files) {
+                Array.from(formData.files).forEach((file) => {
+                    data.append('files', file);
+                });
+            } else {
+                data.append(key, formData[key]);
             }
-        })
+        }
+
+        try {
+            const isImageValid = await checkIfImage(formData.imageUrl);
+            if (!isImageValid) {
+                toast.error('Provide valid image URL');
+                return;
+            }
+
+            const response = await axios.post('/campaigns', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log('Campaign created successfully:', response.data);
+            toast.success(response.data.msg);
+
+            // Reset form
+            setFormData({
+                name: '',
+                useremail: useremail,
+                campaignTitle: '',
+                story: '',
+                goal: '',
+                endDate: '',
+                imageUrl: '',
+                walletAddress: '',
+                files: null,
+            });
+
+            navigate('/');
+        } catch (err) {
+            // Check if the error response has the 'err' property
+            if (err.response && err.response.data && err.response.data.err) {
+                toast.error(err.response.data.err);
+            } else {
+                toast.error('Server error');
+            }
+        }
     };
 
     return (
@@ -134,6 +152,17 @@ const SubmitRequest = () => {
                         value={formData.walletAddress}
                         handleChange={(e) => handleChange('walletAddress', e.target.value)}
                     />
+
+                    <div className="flex flex-col gap-[40px]">
+                        <label className="text-white">Upload Supporting Files (PDFs Only):</label>
+                        <input 
+                            type="file" 
+                            name="files" 
+                            accept="application/pdf" 
+                            multiple 
+                            onChange={handleFileChange} 
+                        />
+                    </div>
 
                     <div className="flex justify-center items-center mt-[40px]">
                         <CustomButton 

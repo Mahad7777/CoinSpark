@@ -18,10 +18,9 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-// Middleware to handle file uploads
 const uploadFields = upload.array('files', 10); // Assuming 'documents' is the field name and allowing up to 10 files
 
-campaign.post('/',createRequests)
+campaign.post('/',uploadFields,createRequests)
 campaign.get('/', getRequests)
 campaign.get('/:id', getRequest_withID)
 campaign.patch('/:id', updateRequestStatus)

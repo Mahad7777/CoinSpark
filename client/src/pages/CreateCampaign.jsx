@@ -8,6 +8,7 @@ import {checkIfImage} from '../utils';
 // import isImageUrl from 'is-image-url';
 
 const CreateCampaign = () => {
+  const exchangerate = 1047724
   const location = useLocation();
   const initialFormData = location.state?.campaign || {};
 
@@ -31,17 +32,22 @@ const CreateCampaign = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    checkIfImage(form.image, async (exists) => {
+    try {
+        const exists = await checkIfImage(form.image);
         if (exists) {
             setIsLoading(true);
-            await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
+            const targetInEther = parseFloat(form.target) / exchangerate;
+            await createCampaign({ ...form, target: ethers.utils.parseUnits(targetInEther.toString(), 18) });
             setIsLoading(false);
             navigate('/');
         } else {
             alert('Provide valid image URL');
             setForm({ ...form, image: '' });
         }
-    });
+    } catch (error) {
+        console.error('Error checking image URL:', error);
+        alert('An error occurred while checking the image URL');
+    }
 };
 
 useEffect(() => {
@@ -101,15 +107,10 @@ useEffect(() => {
               handleChange={(e) => handleFormFieldChange('description', e)}
             />
   
-          {/* <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
-            <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>
-            <h4 className="font-epilogue font-bold text-[25px] text-white ml-[20px]">You will get 100% of the raised amount</h4>
-          </div> */}
-  
           <div className="flex flex-wrap gap-[40px]">
             <FormField 
               labelName="Goal *"
-              placeholder="ETH 0.50"
+              placeholder="Enter amount in PKR"
               inputType="text"
               value={form.target}
               handleChange={(e) => handleFormFieldChange('target', e)}
