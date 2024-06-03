@@ -14,18 +14,18 @@ const RequestCard = ({ campaign }) => {
                         : 'border-red-500';
 
   return (
-    <div className={`flex bg-gray-900 shadow-md rounded-lg p-4 space-x-4 text-white`}>
-      {/* <img src={campaign.image} alt="Campaign" className="w-32 h-32 rounded-lg object-cover" /> */}
+    <div className={`flex bg-gray-900 shadow-md rounded-lg p-4 space-x-4 text-white items-center relative`}>
+      <img src={campaign.imageUrl} alt="Campaign" className="w-100 h-32 rounded-lg object-cover" />
       <div className="flex flex-col flex-grow">
-        <h2 className="text-xl font-bold">{campaign.campaignTitle}</h2>
-        <p className="text-gray-300">{campaign.story}</p>
+        <h1 className="font-epilogue text-xl font-bold mb-4">{campaign.campaignTitle}</h1>
+        <p className="font-epilogue text-md mb-4">{campaign.name}</p>
+        <button 
+          onClick={handleNavigate}
+          className={`absolute top-12 right-4 px-4 py-2 bg-${borderColorClass} font-epilogue text-white rounded hover:bg-blue-600 transition duration-300 border-2 ${borderColorClass}`}
+        >
+          View Details
+        </button>
       </div>
-      <button 
-        onClick={handleNavigate}
-        className={`px-4 py-2 bg-${borderColorClass} text-white rounded hover:bg-blue-600 transition duration-300 border-2 ${borderColorClass}`}
-      >
-        View Details
-      </button>
     </div>
   );
 };

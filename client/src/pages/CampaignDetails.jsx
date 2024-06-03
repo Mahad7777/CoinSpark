@@ -8,6 +8,7 @@ import { calculateBarPercentage, daysLeft } from '../utils';
 import { thirdweb } from '../assets';
 
 const CampaignDetails = () => {
+  const exchangerate = 1047724
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
@@ -30,12 +31,18 @@ const CampaignDetails = () => {
 
   const handleDonate = async () => {
     setIsLoading(true);
+    const amountInEther = parseFloat(amount) / exchangerate;
 
-    await donate(state.pId, amount); 
+    try {
+      await donate(state.pId, amountInEther.toString()); 
+      navigate('/');
+    } catch (error) {
+      console.error('Error donating:', error);
+      alert('An error occurred while processing your donation');
+    }
 
-    navigate('/')
     setIsLoading(false);
-  }
+  };
 
   return (
     <div>
@@ -52,7 +59,7 @@ const CampaignDetails = () => {
 
         <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
           <CountBox title="Days Left" value={remainingDays} />
-          <CountBox title={`Raised of ${state.target}`} value={state.amountCollected} />
+          <CountBox title={`Raised of ${state.target * exchangerate}`} value={state.amountCollected * exchangerate} />
           <CountBox title="Total Backers" value={donators.length} />
         </div>
       </div>
@@ -60,12 +67,12 @@ const CampaignDetails = () => {
       <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
         <div className="flex-[2] flex flex-col gap-[40px]">
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">Creator</h4>
+            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">Recipient</h4>
 
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
-              <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
+              {/* <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
                 <img src={thirdweb} alt="user" className="w-[60%] h-[60%] object-contain"/>
-              </div>
+              </div> */}
               <div>
                 <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">{state.owner}</h4>
                 <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">10 Campaigns</p>
@@ -88,7 +95,7 @@ const CampaignDetails = () => {
                 {donators.length > 0 ? donators.map((item, index) => (
                   <div key={`${item.donator}-${index}`} className="flex justify-between items-center gap-4">
                     <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">{index + 1}. {item.donator}</p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">{item.donation}</p>
+                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">{item.donation * exchangerate} PKR </p>
                   </div>
                 )) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">No donators yet. Be the first one!</p>
@@ -107,8 +114,8 @@ const CampaignDetails = () => {
             <div className="mt-[30px]">
               <input 
                 type="number"
-                placeholder="ETH 0.1"
-                step="0.01"
+                placeholder="Enter amount in PKR"
+                // step="0.01"
                 className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}

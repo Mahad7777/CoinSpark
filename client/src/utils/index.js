@@ -11,12 +11,16 @@ export const daysLeft = (deadline) => {
     return percentage;
   };
   
-  export const checkIfImage = (url, callback) => {
-    const img = new Image();
-    img.src = url;
-  
-    if (img.complete) callback(true);
-  
-    img.onload = () => callback(true);
-    img.onerror = () => callback(false);
-  };
+  export const checkIfImage = (url) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = url;
+
+        if (img.complete) {
+            resolve(true);
+        } else {
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+        }
+    });
+};

@@ -20,9 +20,9 @@ const AdminSidebar = () => {
 
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh] pt-3">
-      <Link to="/">
+      {/* <Link to="/">
         <Icon styles="w-[52px] h-[52px] bg-black" Logo />
-      </Link>
+      </Link> */}
 
       <div className="flex-1 flex flex-col justify-between items-center bg-gradient-to-br from-black via-gray-900 to-blue-900 rounded-[20px] w-[76px] py-4 mt-12">
         <div className="flex flex-col justify-center items-center gap-3">
