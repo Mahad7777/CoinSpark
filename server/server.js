@@ -22,10 +22,10 @@ app.use('/user', require('./routes/user'))
 app.use('/campaigns', require('./routes/campaign_req'))
 
 
-app.use(express.static("../client/dist"))
-app.get("*",(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"client","dist","index.html"))
-})
+// app.use(express.static("../client/dist"))
+// app.get("*",(req,res)=>{
+//     res.sendFile(path.resolve(__dirname,"client","dist","index.html"))
+// })
 
 //setting up port
 const port = 8000

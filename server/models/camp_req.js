@@ -43,11 +43,11 @@ const CampaignSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    // documents:{
-    //     type: [String],
-    //     required: true,
-    //     default: []
-    // },
+    documents:{
+        type: [String],
+        required: true,
+        default: []
+    },
     status:{
         type: String,
         enum: ["pending", "accepted", "rejected"],
