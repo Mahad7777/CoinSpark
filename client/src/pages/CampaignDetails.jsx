@@ -5,6 +5,7 @@ import {toast} from 'react-hot-toast'
 import { useStateContext } from '../context';
 import { CountBox, CustomButton, Loader } from '../components';
 import { calculateBarPercentage, daysLeft } from '../utils';
+import axios from 'axios';
 
 const CampaignDetails = () => {
   const exchangerate = 1047724

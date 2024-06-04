@@ -85,9 +85,31 @@ const getRequest_withID = async (req, res) => {
         }
     };
 
+    const getRequest_withStatus = async (req, res) => {
+        try {
+          const { status } = req.params;
+      
+          if (!status) {
+            return res.status(400).json({ error: "Please provide a valid status parameter." });
+          }
+      
+          const filteredCampaigns = await Campaign.find({ status });
+      
+          if (filteredCampaigns.length === 0) {
+            return res.status(404).json({ error: `No campaigns found with status ${status}` });
+          }
+      
+          res.status(200).json(filteredCampaigns);
+        } catch (error) {
+          console.error("Error handling request:", error);
+          res.status(500).json({ error: "Internal Server Error" });
+        }
+      };
+
 module.exports = {
     createRequests,
     getRequests,
     getRequest_withID,
-    updateRequestStatus
+    updateRequestStatus,
+    getRequest_withStatus
 }

@@ -21,6 +21,7 @@ app.use(express.urlencoded({extended: false}))
 //setting up routes
 app.use('/user', require('./routes/user'))
 app.use('/campaigns', require('./routes/campaign_req'))
+app.use('/transactions', require('./routes/transactions'))
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
