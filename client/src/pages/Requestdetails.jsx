@@ -87,7 +87,7 @@ const RequestDetails = () => {
           <div className="mb-6">
             <p className="mb-2 text-lg">{campaign.name}</p>
             <p className="mb-2 text-lg">{campaign.useremail}</p>
-            <p className="mb-4 text-lg">RS {campaign.goal}</p>
+            <p className="mb-4 text-lg">ETH {campaign.goal}</p>
             <p className="mb-2 text-lg">{new Date(campaign.endDate).toLocaleDateString()}</p>
             <p className="mb-2 text-lg">{campaign.walletAddress}</p>
             <p className="mb-2 text-lg">{campaign.status}</p>
@@ -110,14 +110,14 @@ const RequestDetails = () => {
         </div>
       </div>
       {/* Action buttons */}
-      <div className="flex">
-        <button onClick={makeLive} className="bg-green-600 hover:bg-green-400 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-          Make it Live
-        </button>
-        <button onClick={rejectRequest} className="bg-red-600 hover:bg-red-400 text-black font-bold ml-5 py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-          Reject
-        </button>
-      </div>
+    {campaign.status === 'pending' && (<div className="flex">
+      <button onClick={makeLive} className="bg-green-600 hover:bg-green-400 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+        Make it Live
+      </button>
+      <button onClick={rejectRequest} className="bg-red-600 hover:bg-red-400 text-black font-bold ml-5 py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+        Reject
+      </button>
+    </div>)}
     </div>
   );
 };

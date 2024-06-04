@@ -26,7 +26,7 @@ function Navbar() {
                     className={` hover:text-[#1abc9c] ${activeLink === '/' ? 'text-[#1abc9c]' : 'text-[#3498db]'}`}
                     onClick={() => handleLinkClick('/')}
                 >
-                    Live Campaigns
+                    Verified Campaigns
             </Link>
 
             <Link 

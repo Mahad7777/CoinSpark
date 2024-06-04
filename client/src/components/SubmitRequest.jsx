@@ -155,7 +155,7 @@ const SubmitRequest = () => {
 
                     <div className="flex flex-col gap-[40px]">
                         <label className="text-white">Upload Supporting Files (PDFs Only):</label>
-                        <input 
+                        <input className='text-white'
                             type="file" 
                             name="files" 
                             accept="application/pdf" 
