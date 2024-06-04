@@ -1,5 +1,5 @@
 const express = require("express")
-const { createRequests, getRequests, getRequest_withID, updateRequestStatus } = require("../controllers/campaignController")
+const { createRequests, getRequests, getRequest_withID, updateRequestStatus, getRequest_withStatus } = require("../controllers/campaignController")
 const campaign = express.Router()
 const multer = require('multer');
 const path = require('path');
@@ -23,6 +23,7 @@ const uploadFields = upload.array('files', 10); // Assuming 'documents' is the f
 campaign.post('/',uploadFields,createRequests)
 campaign.get('/', getRequests)
 campaign.get('/:id', getRequest_withID)
+campaign.get('/status/:status', getRequest_withStatus)
 campaign.patch('/:id', updateRequestStatus)
 
 module.exports = campaign

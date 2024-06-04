@@ -1,69 +1,65 @@
-import React from 'react';
-import { Scatter, Pie } from 'react-chartjs-2';
-
+import React, { useEffect, useState } from 'react';
+import { Scatter, Pie, Bar } from 'react-chartjs-2';
+import { useStateContext } from '../context';
+import { daysLeft } from '../utils';
+import axios from 'axios';
+// import 'moment/moment.js'; 
 // Import necessary Chart.js components
 import {
   Chart as ChartJS,
   ArcElement,
   CategoryScale,
   LinearScale,
-  PointElement, // Import PointElement
+  BarElement, // Import PointElement
   Title,
   Tooltip,
   Legend,
+  // TimeScale, // Import TimeScale
+  // TimeSeriesScale, // Import TimeSeriesScale
 } from 'chart.js';
+
 
 // Register Chart.js components
 ChartJS.register(
   ArcElement,
   CategoryScale,
   LinearScale,
-  PointElement, // Register PointElement
+  BarElement, // Register PointElement
   Title,
   Tooltip,
-  Legend
+  Legend,
+  // TimeScale, // Register TimeScale
+  // TimeSeriesScale // Register TimeSeriesScale
 );
 
 
 const AdminDashboard = () => {
+  const {address,contract,getCampaigns} = useStateContext()
+  const [campaigns, setCampaigns] = useState([]);
+  const [requests, setRequests] = useState([])
+
   // Dummy data for scatter plot
-  const scatterData = {
+  const barData = {
+    labels: [], // Static date labels for the past 7 days
     datasets: [
       {
-        label: 'Dataset 1',
-        data: [
-          { x: 1, y: 2 },
-          { x: 2, y: 3 },
-          { x: 3, y: 4 },
-          { x: 4, y: 5 },
-          { x: 5, y: 6 },
-        ],
-        backgroundColor: 'rgba(255, 99, 132, 1)',
-      },
-      {
-        label: 'Dataset 2',
-        data: [
-          { x: 1, y: 1 },
-          { x: 2, y: 4 },
-          { x: 3, y: 2 },
-          { x: 4, y: 7 },
-          { x: 5, y: 3 },
-        ],
-        backgroundColor: 'rgba(54, 162, 235, 1)',
+        label: 'Number of Transactions',
+        data: [], // Dummy transaction counts
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
       },
     ],
   };
 
-  const scatterOptions = {
+  const barOptions = {
     responsive: true,
     scales: {
       x: {
         ticks: { color: '#F3F4F6' }, // Axis tick color
-        grid: { color: '#4B5563' },  // Grid line color
+        grid: { color: '#4B5563' }, // Grid line color
       },
       y: {
         ticks: { color: '#F3F4F6' }, // Axis tick color
-        grid: { color: '#4B5563' },  // Grid line color
+        grid: { color: '#4B5563' }, // Grid line color
       },
     },
     plugins: {
@@ -72,31 +68,76 @@ const AdminDashboard = () => {
       },
     },
   };
+  
+  // Populate the labels and data arrays with past 7 days and transaction counts
+  const today = new Date();
+  const pastSevenDays = [];
+  
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+    pastSevenDays.push(date);
+  
+    // Replace the following line with your logic to fetch the transaction count for the current date
+    const transactionCount = Math.floor(Math.random() * 100); // Dummy data
+  
+    barData.labels.push(date.toDateString());
+    barData.datasets[0].data.push(transactionCount);
+  }
 
-  // Dummy data for pie charts
+  const fetchCampaigns = async () => {
+    const data = await getCampaigns();
+    setCampaigns(data);
+  };
+
+  useEffect(() => {
+    if (contract) fetchCampaigns();
+  }, [address, contract]);
+
+  const displayedCampaigns = campaigns.filter(campaign => daysLeft(campaign.deadline) >= 0);
+  const closedCampaigns = campaigns.length - displayedCampaigns.length;
+
   const pieData1 = {
     labels: ['Live Campaigns', 'Closed Campaigns'],
     datasets: [{
-      data: [3, 4],
+      data: [displayedCampaigns.length, closedCampaigns],
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)',
         'rgba(54, 162, 235, 0.6)',
-        'rgba(255, 206, 86, 0.6)',
       ],
     }],
   };
 
+  const fetchRequests = async () => {
+    try {
+      const response = await axios.get('/campaigns');
+        setRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const accepted = requests.filter(request => request.status === 'accepted')
+  const rejected = requests.filter(request => request.status === 'rejected')
+  const pending = requests.filter(request => request.status === 'pending')
+
+
   const pieData2 = {
-    labels: ['Accepted', 'Rejected', 'Pending'],
-    datasets: [{
-      data: [2, 1, 1],
+  labels: ['Accepted', 'Rejected', 'Pending'],
+  datasets: [
+    {
+      data: [accepted.length, rejected.length, pending.length],
       backgroundColor: [
         'rgba(144, 238, 144, 0.6)', // Light Green for Accepted
         'rgba(255, 99, 71, 0.6)', // Light Red for Rejected
         'rgba(255, 255, 0, 0.6)', // Yellow for Pending
       ],
-    }],
-  };
+    },
+  ],
+};
 
   const pieData3 = {
     labels: ['Punjab', 'KPK', 'Sindh', 'Balochistan'],
@@ -134,7 +175,7 @@ const AdminDashboard = () => {
   
       <div className="bg-gray-900 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Transactions</h2>
-          <Scatter data={scatterData} options={scatterOptions} />
+          <Bar data={barData} options={barOptions} />
       </div>
     </div>
   );
