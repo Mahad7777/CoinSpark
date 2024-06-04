@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import {ethers} from 'ethers';
-import { useStateContext  } from '../context';
-import { money } from '../assets';
+import { useStateContext } from '../context';
 import { CustomButton,FormField,Loader } from '../components';
 import {checkIfImage} from '../utils';
 // import isImageUrl from 'is-image-url';

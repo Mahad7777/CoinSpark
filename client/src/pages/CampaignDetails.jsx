@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
-
+import {toast} from 'react-hot-toast'
 import { useStateContext } from '../context';
 import { CountBox, CustomButton, Loader } from '../components';
 import { calculateBarPercentage, daysLeft } from '../utils';
-import { thirdweb } from '../assets';
 
 const CampaignDetails = () => {
   const exchangerate = 1047724
+
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
@@ -16,12 +16,10 @@ const CampaignDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState('');
   const [donators, setDonators] = useState([]);
-
   const remainingDays = daysLeft(state.deadline);
 
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
-
     setDonators(data);
   }
 
@@ -29,10 +27,15 @@ const CampaignDetails = () => {
     if(contract) fetchDonators();
   }, [contract, address])
 
-  const handleDonate = async () => {
-    setIsLoading(true);
-    const amountInEther = parseFloat(amount) / exchangerate;
+  const amountInEther = parseFloat(amount) / exchangerate;
+  const amount_exceeded = state.target < state.amountCollected
+  const transaction_exceeded = amountInEther > (state.target - state.amountCollected)
 
+  const handleDonate = async () => {
+    if (transaction_exceeded){
+      return toast.error("Transaction exceeds recipient limit")
+    }
+    setIsLoading(true);
     try {
       await donate(state.pId, amountInEther.toString()); 
       navigate('/');
@@ -40,7 +43,6 @@ const CampaignDetails = () => {
       console.error('Error donating:', error);
       alert('An error occurred while processing your donation');
     }
-
     setIsLoading(false);
   };
 
@@ -59,7 +61,9 @@ const CampaignDetails = () => {
 
         <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
           <CountBox title="Days Left" value={remainingDays} />
-          <CountBox title={`Raised of ${state.target * exchangerate}`} value={state.amountCollected * exchangerate} />
+          <CountBox title={`Raised of ${Math.floor(state.target * exchangerate)}`} 
+                    value={Math.floor(state.amountCollected * exchangerate)} 
+          />
           <CountBox title="Total Backers" value={donators.length} />
         </div>
       </div>
@@ -115,7 +119,6 @@ const CampaignDetails = () => {
               <input 
                 type="number"
                 placeholder="Enter amount in PKR"
-                // step="0.01"
                 className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
@@ -126,12 +129,20 @@ const CampaignDetails = () => {
                 <p className="mt-[20px] font-epilogue font-normal leading-[22px] text-[#808191]">Support the project for no reward, just because it speaks to you.</p>
               </div>
 
+              {amount_exceeded ? (
+              <CustomButton 
+                btnType="button"
+                title="Target amount raised! "
+                styles="w-full bg-[#ccc] cursor-not-allowed"
+              />
+              ) : (
               <CustomButton 
                 btnType="button"
                 title="Fund Campaign"
                 styles="w-full bg-[#1abc9c]"
                 handleClick={handleDonate}
               />
+              )}
             </div>
           </div>
         </div>

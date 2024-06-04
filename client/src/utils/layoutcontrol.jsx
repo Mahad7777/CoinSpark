@@ -1,7 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import AdminSidebar from '../components/AdminSidebar';
-import { Sidebar } from '../components';
-import Navbar from '../components/Navbar';
+import { UserNavbar, AdminNavbar } from '../components';
 import { Outlet, useNavigate, Navigate, Link } from 'react-router-dom';
 import {UserContext} from '../context/userContext'
 
@@ -30,10 +28,9 @@ export const MainLayout = () => {
   return user? (
     <div className="relative sm:-8 p-4 bg-gradient-to-br from-black via-gray-900 to-blue-900 min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
-        <Sidebar />
       </div>
       <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
-        <Navbar />
+        <UserNavbar />
         <Outlet />
       </div>
     </div>
@@ -80,10 +77,9 @@ export const PublicLayout = () => {
     return isAdmin ? (
       <div className="relative sm:-8 p-4 bg-gradient-to-br from-black via-gray-900 to-blue-900 min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
-        <AdminSidebar />
       </div>
       <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
-        <Navbar />
+        <AdminNavbar />
         <Outlet />
       </div>
     </div>
