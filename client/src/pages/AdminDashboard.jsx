@@ -44,7 +44,7 @@ const AdminDashboard = () => {
     datasets: [
       {
         label: 'Number of Transactions',
-        data: [], // Dummy transaction counts
+        data: [1,1,2,1,3,6], // Dummy transaction counts
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
       },
     ],
@@ -69,20 +69,43 @@ const AdminDashboard = () => {
     },
   };
   
-  // Populate the labels and data arrays with past 7 days and transaction counts
-  const today = new Date();
-  const pastSevenDays = [];
-  
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
-    pastSevenDays.push(date);
-  
-    // Replace the following line with your logic to fetch the transaction count for the current date
-    const transactionCount = Math.floor(Math.random() * 100); // Dummy data
-  
-    barData.labels.push(date.toDateString());
-    barData.datasets[0].data.push(transactionCount);
+
+  async function fetchTransactionData() {
+    const today = new Date();
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      console.log(dateString)
+      
+      // Use Axios to fetch transaction count for the current date
+      // const transactionCount = await fetchTransactionCountFromDate(dateString);
+      barData.labels.push(dateString); // Use the same date format as in the database
+      // barData.datasets[0].data.push(transactionCount);
+    }
   }
+  
+  // Function to fetch transaction count using Axios for a given date
+  async function fetchTransactionCountFromDate() {
+    try {
+      let date = '2024-06-03'
+      // Make an Axios POST request to fetch transaction count for the given date
+      const response = await axios.post('/transactions/bydate', { date });
+      console.log(response.data.countbydate.count)
+      // Extract the transaction count from the response
+      const transactionCount = response.data.countbydate.count; // Assuming the response contains the transaction count
+      
+      return transactionCount;
+    } catch (error) {
+      console.error('Error fetching transaction count:', error);
+      throw error;
+    }
+  }
+
+  const data = fetchTransactionCountFromDate()
+  barData.datasets[0].data.push(data);
+  
+  // Call the function to fetch transaction data
+  fetchTransactionData();
 
   const fetchCampaigns = async () => {
     const data = await getCampaigns();
@@ -182,3 +205,19 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+  // const today = new Date();
+  // const pastSevenDays = [];
+  
+  // for (let i = 6; i >= 0; i--) {
+  //   const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+  //   pastSevenDays.push(date);
+  
+  //   // Replace the following line with your logic to fetch the transaction count for the current date
+  //   const transactionCount = Math.floor(Math.random() * 100); // Dummy data
+  
+  //   barData.labels.push(date.toDateString());
+  //   barData.datasets[0].data.push(transactionCount);
+  // }
+  
+  // Populate the labels and data arrays with past 7 days and transaction counts

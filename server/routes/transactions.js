@@ -5,6 +5,6 @@ const transactions = express.Router()
 transactions.post('/',writeTransaction)
 transactions.patch('/',updateTransactionCount)
 transactions.get('/',getAllTransactions)
-transactions.get('/:date',getTransactionsbyDate)
+transactions.post('/bydate',getTransactionsbyDate)
 
 module.exports = transactions

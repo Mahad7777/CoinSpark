@@ -28,9 +28,9 @@ const CampaignDetails = () => {
     if(contract) fetchDonators();
   }, [contract, address])
 
-  const amountInEther = parseFloat(amount) / exchangerate;
+  // const amountInEther = Math.floor(parseFloat(amount) / exchangerate)
   const amount_exceeded = state.target < state.amountCollected
-  const transaction_exceeded = amountInEther > (state.target - state.amountCollected)
+  const transaction_exceeded = amount > (state.target - state.amountCollected)
 
   const handleDonate = async () => {
     if (transaction_exceeded){
@@ -38,7 +38,9 @@ const CampaignDetails = () => {
     }
     setIsLoading(true);
     try {
-      await donate(state.pId, amountInEther.toString()); 
+      await donate(state.pId, amount);
+      const today = new Date().toISOString().slice(0, 10); // Today's date in YYYY-MM-DD format
+      await axios.post('/transactions',{ date: today }); 
       navigate('/');
     } catch (error) {
       console.error('Error donating:', error);
@@ -62,8 +64,8 @@ const CampaignDetails = () => {
 
         <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
           <CountBox title="Days Left" value={remainingDays} />
-          <CountBox title={`Raised of ${Math.floor(state.target * exchangerate)}`} 
-                    value={Math.floor(state.amountCollected * exchangerate)} 
+          <CountBox title={`Raised of ${state.target}`} 
+                    value={state.amountCollected} 
           />
           <CountBox title="Total Backers" value={donators.length} />
         </div>
@@ -100,7 +102,7 @@ const CampaignDetails = () => {
                 {donators.length > 0 ? donators.map((item, index) => (
                   <div key={`${item.donator}-${index}`} className="flex justify-between items-center gap-4">
                     <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">{index + 1}. {item.donator}</p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">{item.donation * exchangerate} PKR </p>
+                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">{item.donation} ETH </p>
                   </div>
                 )) : (
                   <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">No donators yet. Be the first one!</p>
