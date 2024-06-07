@@ -2,8 +2,17 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken');
 const { GenerateToken } = require('./tokenController');
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find(); // Assuming you're using Mongoose for MongoDB
+        res.json(users); // Sending the users as JSON response
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
 const userSignup = async (req,res) => { 
-    const {name,email,password} = req.body
+    const {name,email,password,province} = req.body
     try {
         // Check if the user already exists
         let user = await User.findOne({ email });
@@ -16,6 +25,7 @@ const userSignup = async (req,res) => {
             name,
             email,
             password,
+            province
         });
     
         // Save the user to the database
@@ -74,5 +84,6 @@ const getUser = async (req, res) => {
 module.exports = {
     userSignup,
     userLogin,
-    getUser
+    getUser,
+    getAllUsers
 }

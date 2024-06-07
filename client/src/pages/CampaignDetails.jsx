@@ -19,6 +19,9 @@ const CampaignDetails = () => {
   const [donators, setDonators] = useState([]);
   const remainingDays = daysLeft(state.deadline);
 
+  const mycampaign = state.owner === address ? true : false
+  const admin_donate = address === '0x3D7Ab6a28b43dFa72D6CE25585532bA85a789913' ? true : false
+
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
     setDonators(data);
@@ -35,6 +38,12 @@ const CampaignDetails = () => {
   const handleDonate = async () => {
     if (transaction_exceeded){
       return toast.error("Transaction exceeds recipient limit")
+    }
+    if(mycampaign){
+      return toast.error("Can not donate to yourself")
+    }
+    if(admin_donate){
+      return toast.error("Admin can not donate! ")
     }
     setIsLoading(true);
     try {
@@ -67,7 +76,7 @@ const CampaignDetails = () => {
           <CountBox title={`Raised of ${state.target}`} 
                     value={state.amountCollected} 
           />
-          <CountBox title="Total Backers" value={donators.length} />
+          <CountBox title="Total Donators" value={donators.length} />
         </div>
       </div>
 
@@ -82,7 +91,6 @@ const CampaignDetails = () => {
               </div> */}
               <div>
                 <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">{state.owner}</h4>
-                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">10 Campaigns</p>
               </div>
             </div>
           </div>
@@ -121,7 +129,7 @@ const CampaignDetails = () => {
             <div className="mt-[30px]">
               <input 
                 type="number"
-                placeholder="Enter amount in PKR"
+                placeholder="Enter amount in ETH"
                 className="w-full py-[10px] sm:px-[20px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[18px] leading-[30px] placeholder:text-[#4b5264] rounded-[10px]"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}

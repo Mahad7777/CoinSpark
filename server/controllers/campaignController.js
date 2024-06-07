@@ -12,6 +12,12 @@ const createRequests = async (req, res) => {
             return res.status(400).json({ err: "Must attach supporting files for your case!" });
         }
 
+        const now = new Date();
+        const endDateTime = new Date(endDate);
+        if (endDateTime <= now) {
+            return res.status(400).json({ err: "End date must be in the future!" });
+        }
+
         // Collect file paths
         const documents = req.files.map(file => file.path);
 

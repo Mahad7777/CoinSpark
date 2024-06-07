@@ -9,8 +9,9 @@ const Signup = () => {
         name: '',
         email: '',
         password: '',
+        provine: ''
     });
-    const { name, email, password } = formData;
+    const { name, email, password, province } = formData;
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,10 +53,6 @@ const Signup = () => {
                                 className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
                                 placeholder="Name"
                             />
-                            {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute right-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                <path fillRule="evenodd" d="M4 8a4 4 0 118 0 4 4 0 01-8 0zm9-4a1 1 0 011-1h1a2 2 0 00-2-2H8a2 2 0 00-2 2h5a1 1 0 011 1z" clipRule="evenodd" />
-                            </svg> */}
                         </div>
                     </div>
                     <div className="flex flex-col items-center gap-2 w-full">
@@ -71,9 +68,6 @@ const Signup = () => {
                                 className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
                                 placeholder="Email"
                             />
-                            {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute right-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm2-2a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1V5a1 1 0 00-1-1H4z" clipRule="evenodd" />
-                            </svg> */}
                         </div>
                     </div>
                     <div className="flex flex-col items-center gap-2 w-full">
@@ -90,12 +84,28 @@ const Signup = () => {
                                 className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
                                 placeholder="Password"
                             />
-                            {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute right-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                <path fillRule="evenodd" d="M4 8a4 4 0 118 0 4 4 0 01-8 0zm9-4a1 1 0 011-1h1a2 2 0 00-2-2H8a2 2 0 00-2 2h5a1 1 0 011 1z" clipRule="evenodd" />
-                            </svg> */}
                         </div>
                     </div>
+                    <div className="flex flex-col items-center gap-2 w-full">
+                    <span className="text-sm font-medium text-gray-400">Your Province</span>
+                    <div className="relative flex items-center w-full">
+                        <select
+                            id="province"
+                            name="province"
+                            value={province}
+                            onChange={onChange}
+                            required
+                            className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"
+                        >
+                            <option value="">Select Province</option>
+                            <option value="KPK">KPK</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Sindh">Sindh</option>
+                            <option value="Balochistan">Balochistan</option>
+                            <option value="Gilgit">Gilgit</option>
+                        </select>
+                    </div>
+                </div>
                     <button type="submit" className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors">
                         Sign Up
                     </button>
