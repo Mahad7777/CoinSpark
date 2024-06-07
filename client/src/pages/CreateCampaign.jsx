@@ -4,10 +4,11 @@ import {ethers} from 'ethers';
 import { useStateContext } from '../context';
 import { CustomButton,FormField,Loader } from '../components';
 import {checkIfImage} from '../utils';
+import toast from 'react-hot-toast';
 // import isImageUrl from 'is-image-url';
 
 const CreateCampaign = () => {
-  const exchangerate = 1047724
+  // const exchangerate = 1047724
   const location = useLocation();
   const initialFormData = location.state?.campaign || {};
 
@@ -31,14 +32,26 @@ const CreateCampaign = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const specialCharacters = /[/!@#$%^&*(),.?":{}|<>]/;
+    if (specialCharacters.test(form.title)) {
+      return toast.error("Title can not have special characters! ")
+    }
+
+    const now = new Date();
+    const endDateTime = new Date(form.deadline);
+    const pastdate = endDateTime <= now ? true : false
+    if(pastdate){
+      return toast.error("Deadline must be in the future! ")
+    }
+
     try {
         const exists = await checkIfImage(form.image);
         if (exists) {
             setIsLoading(true);
-            const targetInEther = parseFloat(form.target) / exchangerate;
-            await createCampaign({ ...form, target: ethers.utils.parseUnits(targetInEther.toString(), 18) });
+            // const targetInEther = parseFloat(form.target) / exchangerate;
+            await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
             setIsLoading(false);
-            navigate('/');
+            navigate('/campaign-requests');
         } else {
             alert('Provide valid image URL');
             setForm({ ...form, image: '' });

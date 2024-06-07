@@ -37,6 +37,7 @@ const AdminDashboard = () => {
   const {address,contract,getCampaigns} = useStateContext()
   const [campaigns, setCampaigns] = useState([]);
   const [requests, setRequests] = useState([])
+  const [users, setUsers] = useState([])
 
   // Dummy data for scatter plot
   const barData = {
@@ -107,6 +108,7 @@ const AdminDashboard = () => {
   // Call the function to fetch transaction data
   fetchTransactionData();
 
+
   const fetchCampaigns = async () => {
     const data = await getCampaigns();
     setCampaigns(data);
@@ -139,9 +141,6 @@ const AdminDashboard = () => {
     }
   };
   
-  useEffect(() => {
-    fetchRequests();
-  }, []);
 
   const accepted = requests.filter(request => request.status === 'accepted')
   const rejected = requests.filter(request => request.status === 'rejected')
@@ -162,10 +161,25 @@ const AdminDashboard = () => {
   ],
 };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/user');
+        setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+    }
+  };
+
+  const Punjab = users.filter(user => user.province === "Punjab")
+  const KPK = users.filter(user => user.province === "KPK")
+  const Sindh = users.filter(user => user.province === "Sindh")
+  const Balochistan = users.filter(user => user.province === "Balochistan")
+
+  // fetchUsers()
   const pieData3 = {
     labels: ['Punjab', 'KPK', 'Sindh', 'Balochistan'],
     datasets: [{
-      data: [2, 1, 1, 3],
+      data: [Punjab.length, KPK.length, Sindh.length, Balochistan.length],
       backgroundColor: [
         'rgba(75, 192, 192, 0.6)',
         'rgba(153, 102, 255, 0.6)',
@@ -174,6 +188,11 @@ const AdminDashboard = () => {
       ],
     }],
   };
+
+  useEffect(() => {
+    fetchRequests();
+    fetchUsers();
+  }, []);
 
   return (
     <div className="p-8 min-h-screen text-gray-200">
